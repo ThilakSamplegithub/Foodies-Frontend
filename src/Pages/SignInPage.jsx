@@ -18,12 +18,15 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import { Icon, createIcon } from '@chakra-ui/react'
 import logo from "../Assets/Logo.png";
-import { signinRequest } from '../Redux/Authentication/actions';
+import { handleGoogleSignin, signinRequest } from '../Redux/Authentication/actions';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar from '../Components/Navbar';
-
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
+import { auth, provider } from '../firebase-config'
+import GoogleIcon from '../Components/GoogleIcon';
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -59,7 +62,20 @@ const SignIn = () => {
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
   };
-
+  const handleClick = () => {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const user = result.user;
+        if (user) {
+          dispatch(handleGoogleSignin({username:user.displayName,email:user.email}))
+          navigate(location.state,{replace:true})
+        }
+      }).catch((error) => {
+        console.log(error.message)
+        alert("Error occured during the login")
+      });
+  }
   return signinLoading?<div><span className={styles.loader}></span></div>: (
     <>
       <Navbar/>
@@ -124,6 +140,15 @@ const SignIn = () => {
                 Don't have an account?{' '}
                 <Link to="/signup">Sign up</Link>
               </Text>
+              <Box m={'auto'} border={'0px solid red'} >
+              <Text mt={8} mb={8}>--or--</Text>
+              {/* <div className="sign-in-with-google" onClick={handleClick}>
+              Sign in with Google
+            </div> */}
+            <Box onClick={handleClick}>
+            <GoogleIcon boxSize="6" color="red.500" />
+            </Box>
+            </Box>
             </Stack>
           </Flex>
         </Box>

@@ -32,7 +32,7 @@ export const signupRequest = (userData) => {
         userData
       );
       const newUser = createUserResponse.data;
-
+      console.log(newUser,'is new user')
       if (newUser) {
         dispatch({ type: SIGNUP_SUCCESS });
         return true;
@@ -86,3 +86,10 @@ export const logout = () => {
     type: LOGOUT,
   };
 };
+// google signin synchronous action creator function
+export const handleGoogleSignin=(user)=>{
+  return {
+    type: SIGNIN_SUCCESS,
+    payload: { username: user.username, email: user.email },
+  }
+}
