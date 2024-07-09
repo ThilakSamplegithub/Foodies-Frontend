@@ -1,0 +1,35 @@
+# Use a specific version of node as base image
+FROM node:20-bullseye
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the entire local directory to the container's working directory
+COPY . /app
+
+# Define build arguments
+ARG REACT_APP_API
+ARG REACT_APP_FIREBASE_API_KEY
+ARG REACT_APP_FIREBASE_AUTH_DOMAIN
+ARG REACT_APP_FIREBASE_PROJECT_ID
+ARG REACT_APP_FIREBASE_STORAGE_BUCKET
+ARG REACT_APP_FIREBASE_MESSAGING_SENDER_ID
+ARG REACT_APP_FIREBASE_APP_ID
+
+# Set environment variables based on build arguments
+ENV REACT_APP_API=$REACT_APP_API
+ENV REACT_APP_FIREBASE_API_KEY=$REACT_APP_FIREBASE_API_KEY
+ENV REACT_APP_FIREBASE_AUTH_DOMAIN=$REACT_APP_FIREBASE_AUTH_DOMAIN
+ENV REACT_APP_FIREBASE_PROJECT_ID=$REACT_APP_FIREBASE_PROJECT_ID
+ENV REACT_APP_FIREBASE_STORAGE_BUCKET=$REACT_APP_FIREBASE_STORAGE_BUCKET
+ENV REACT_APP_FIREBASE_MESSAGING_SENDER_ID=$REACT_APP_FIREBASE_MESSAGING_SENDER_ID
+ENV REACT_APP_FIREBASE_APP_ID=$REACT_APP_FIREBASE_APP_ID
+
+# Install dependencies
+RUN npm install
+
+# Expose port 3000 to tell Docker that the container listens on the specified network port at runtime
+EXPOSE 3000
+
+# Command to run the app
+CMD npm start
